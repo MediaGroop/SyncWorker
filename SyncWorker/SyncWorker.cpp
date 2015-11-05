@@ -7,24 +7,54 @@
 #include "FileManager.h"
 #include "ConfigLoader.h"
 #include "ServVars.h"
+#include "Rooming.h"
 
+//Handlers
+#include "WorkerConnectHandler.h"
+#include "WorkerDisconnectHandler.h"
+
+//RPC's
+#include "AddEntityHandler.h"
+#include "RemoveEntityHandler.h"
+#include "MoveEntityHandler.h"
+#include "DeleteEntityHandler.h"
+#include "UpdateEntityHandler.h"
+
+
+#pragma comment(lib, "BulletCollision_Debug.lib")
+#pragma comment(lib, "BulletDynamics_Debug.lib")
+#pragma comment(lib, "LinearMath_Debug.lib")
+
+
+//Some of copy-pasted options for logger
 #define ELPP_STL_LOGGING
 #define ELPP_PERFORMANCE_MICROSECONDS
 #define ELPP_LOG_STD_ARRAY
 #define ELPP_LOG_UNORDERED_MAP
 #define ELPP_UNORDERED_SET
 #define ELPP_THREAD_SAFE
+//end
 
 //DONT FORGET THIS SHIT!!1
 INITIALIZE_EASYLOGGINGPP
 
 //extern vars
+
+//Server instance
 Server* mainServer;
-std::map<int, Room*> _rooms;
+//Processors collection
+std::map<int, RoomProcessor*> _processors;
+//Amount of room processors
+int proc_count = 0;
+//Worker's rpc
 RakNet::RPC4 rpc;
+//Entity without rooms
+std::map<int, Entity*> _roomless_entities;
+
+
 using namespace FileManager;
 
-//Configures easyLogging
+//Configures easyLogging. TODO: adapt for linux systems
 void setupLog(){
 	time_t t;
 	t = time(0);
@@ -58,8 +88,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	setupLog();
 	ConfigLoader::init("config.ini");
 	NetworkListener listen;
-	//listen.add((short)ID_NEW_INCOMING_CONNECTION, handleconn); // Server connect handler
-	//listen.add((short)ID_CONNECTION_LOST, handledisconn); // Server disconnect handler
+	listen.add((short)ID_NEW_INCOMING_CONNECTION, handleConnect); // Server connect handler
+	listen.add((short)ID_CONNECTION_LOST, handleDisconnect); // Server disconnect handler
 
 	Server srv(&listen);
 
@@ -69,7 +99,11 @@ int _tmain(int argc, _TCHAR* argv[])
 	mainServer->getPeer()->AttachPlugin(&rpc);
 
 	//Registering RPC's
-	//rpc.RegisterSlot("lw", loadWorldsRPC, 0);
+	rpc.RegisterSlot("ae", handleEntity, 0); // adding entity to room
+	rpc.RegisterSlot("me", moveEntity, 0); // moving entity to another room(Can't add to nowhere!)
+	rpc.RegisterSlot("re", removeEntity, 0); // removes entity from room(Places it to the roomless)
+	rpc.RegisterSlot("de", deleteEntity, 0); // deletes entity
+	rpc.RegisterSlot("ue", updateEntity, 0); // updates da entity
 	//END
 
 	gets(str);

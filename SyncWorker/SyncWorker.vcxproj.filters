@@ -549,6 +549,24 @@
     <ClInclude Include="Room.h">
       <Filter>Заголовочные файлы\Server</Filter>
     </ClInclude>
+    <ClInclude Include="Rooming.h">
+      <Filter>Заголовочные файлы\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="RoomProcessor.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveEntityHandler.h">
+      <Filter>Заголовочные файлы\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="DeleteEntityHandler.h">
+      <Filter>Заголовочные файлы\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="UpdateEntityHandler.h">
+      <Filter>Заголовочные файлы\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="MotionState.h">
+      <Filter>Заголовочные файлы\Server</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entity.cpp">
@@ -903,6 +921,12 @@
       <Filter>Файлы исходного кода\RakNet</Filter>
     </ClCompile>
     <ClCompile Include="Room.cpp">
+      <Filter>Файлы исходного кода\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="RoomProcessor.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="MotionState.cpp">
       <Filter>Файлы исходного кода\Server</Filter>
     </ClCompile>
   </ItemGroup>

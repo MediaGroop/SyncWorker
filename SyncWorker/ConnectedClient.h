@@ -13,6 +13,7 @@ public:
 		return &addr;
 	}
 
+
 	ConnectedClient(RakNet::AddressOrGUID a){
 		this->addr = a;
 	};

@@ -1,21 +1,30 @@
 #pragma once
 #include "stdafx.h"
-#include "ServVars.h"
+#include "Rooming.h"
 
-void handleRemoveEntity(RakNet::Packet* p)
+//Removes entity from it's room and places it to the roomless list
+void removeEntity(RakNet::BitStream *bitStream, RakNet::Packet *p)
 {
+	int offset = bitStream->GetReadOffset();
+	int entityId, roomId;
+	Entity* ent_ptr;
+	Room* fRoom;
 
-	RakNet::BitStream bsIn(p->data, p->length, false);
-	bsIn.IgnoreBytes(sizeof(RakNet::MessageID));
+	bitStream->Read(entityId);
+	bitStream->Read(roomId);
 
-	int worldId, id;
-
-	bsIn.Read(id);
-	bsIn.Read(worldId);
-
-	World* w = ((*worlds.find(worldId)).second);
-	if (w != nullptr)
+	for (std::map<int, RoomProcessor*>::iterator i = _processors.begin(); i != _processors.end(); ++i)
 	{
-		w->removeEntity(id);
+		fRoom = (*i).second->getRoom(roomId);
+		if (fRoom != nullptr)
+		{
+			break;
+		}
 	}
-};
+	if (fRoom != nullptr)
+	{
+		Entity* e = fRoom->getEntities()->find(entityId)->second;
+		fRoom->removeEntity(entityId);
+		_roomless_entities.insert(pair<int, Entity*>(e->getId(), e));
+	}
+}

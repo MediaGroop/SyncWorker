@@ -1,27 +1,47 @@
 #pragma once
 #include <map>
 #include "Entity.h"
+#include "BulletDynamics\ConstraintSolver\btSequentialImpulseConstraintSolver.h"
+#include "BulletDynamics\Dynamics\btDiscreteDynamicsWorld.h"
+#include "BulletCollision\CollisionDispatch\btDefaultCollisionConfiguration.h"
 #include <thread>
 
 class Room
 {
 private:
-	std::map<int, Entity> _entities; 
+	std::map<int, Entity*> _entities; 
+	
+	btDefaultCollisionConfiguration* _collisionConfiguration;
+	btCollisionDispatcher* _dispatcher;
+	btBroadphaseInterface* _overlappingPairCache;
+	btSequentialImpulseConstraintSolver* _solver;
+	btDiscreteDynamicsWorld* _dynamicsWorld;
 	
 	int _id;
-	std::thread* _trd;
-	bool _running;
+
 public:
+	int getId(){
+		return _id;
+	}
+
+	int getEntitiesCount()
+	{
+		int a = 0;
+		for (std::map<int, Entity*>::iterator i = this->getEntities()->begin(); i != this->getEntities()->end(); ++i)
+		{
+			++a;
+		}
+		return a;
+	}
+
+	void step();
 	void removeEntity(int);
 	void addEntity(Entity*);
 	Room(int i);
 	~Room();
 
-	bool getRunning(){
-		return _running;
-	};
 
-	std::map<int, Entity>* getEntities(){
+	std::map<int, Entity*>* getEntities(){
 		return &_entities;
 	};
 };

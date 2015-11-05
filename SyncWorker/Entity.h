@@ -1,16 +1,33 @@
 #pragma once
 #include <map>
 #include "ServVars.h"
+#include "BulletDynamics\Dynamics\btRigidBody.h"
 
 class Entity
 {
 private:
 	int _id;
 	int _room;
+
 	float _x, _y, _z;
 	float _radius;
+
+	btTransform _transform;
+	btRigidBody* _body;
+
 	std::map<int, Entity*> _entities;
+
 public:
+
+	btTransform* getTransform()
+	{
+		return &_transform;
+	}
+	
+	btRigidBody* getBody()
+	{
+		return _body;
+	}
 
 	float getX()
 	{
@@ -37,9 +54,9 @@ public:
 			_entities.erase(i);
 			RakNet::BitStream bs;
 			bs.Write(this->getRoom()); // room id
-			bs.Write(this->getId()); // to what entity
-			bs.Write(e->getId()); // to add
-			rpc.Signal("re", &bs, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, mainServer->getPeer()->GetSystemAddressFromIndex(0), false, true);
+			bs.Write(this->getId()); // from what entity
+			bs.Write(e->getId()); // entId to remove
+			rpc.Signal("rn", &bs, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, mainServer->getPeer()->GetSystemAddressFromIndex(0), false, true);
 
 		}
 	};
@@ -51,15 +68,19 @@ public:
 			RakNet::BitStream bs;
 			bs.Write(this->getRoom()); // room id
 			bs.Write(this->getId()); // to what entity
-			bs.Write(e->getId()); // to add
-			rpc.Signal("ae", &bs, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, mainServer->getPeer()->GetSystemAddressFromIndex(0), false, true);
+			bs.Write(e->getId()); // entId to add
+			rpc.Signal("an", &bs, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, mainServer->getPeer()->GetSystemAddressFromIndex(0), false, true);
 		}
 	
 	};
 
 	Entity(int, int, float);
+	
 	~Entity();
+	
 	Entity* setPosition(float, float, float);
+
+	Entity* setPosition(btVector3&);
 
 	int getRoom()
 	{
