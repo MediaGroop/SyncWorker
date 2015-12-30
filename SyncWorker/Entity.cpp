@@ -2,6 +2,7 @@
 #include "BulletCollision\CollisionShapes\btSphereShape.h"
 #include "BulletDynamics\Dynamics\btRigidBody.h"
 #include "MotionState.h"
+#include "ServVars.h"
 
 Entity::Entity(int id, int wId, float radius) : _id(id), _room(wId), _radius(radius)
 {
@@ -28,4 +29,30 @@ Entity* Entity::setPosition(btVector3& pos){
 	this->_transform.setOrigin(pos);
 	_body->setWorldTransform(_transform);
 	return this;
+};
+
+void Entity::removeNear(Entity* e){
+	auto i = _entities.find(e->getId());
+	if (i->second != NULL){
+		_entities.erase(i);
+		RakNet::BitStream bs;
+		bs.Write(this->getRoom()); // room id
+		bs.Write(this->getId()); // from what entity
+		bs.Write(e->getId()); // entId to remove
+		rpc.Call("rn", &bs, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, mainServer->getPeer()->GetSystemAddressFromIndex(0), true);
+
+	}
+};
+
+void Entity::addNear(Entity* e){
+	auto i = _entities.find(e->getId());
+	if (i->second == NULL){
+		_entities.insert(std::pair<int, Entity*>(e->getId(), e));
+		RakNet::BitStream bs;
+		bs.Write(this->getRoom()); // room id
+		bs.Write(this->getId()); // to what entity
+		bs.Write(e->getId()); // entId to add
+		rpc.Call("an", &bs, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, mainServer->getPeer()->GetSystemAddressFromIndex(0), true);
+	}
+
 };

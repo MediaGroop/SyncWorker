@@ -99,11 +99,11 @@ int _tmain(int argc, _TCHAR* argv[])
 	mainServer->getPeer()->AttachPlugin(&rpc);
 
 	//Registering RPC's
-	rpc.RegisterSlot("ae", handleEntity, 0); // adding entity to room
-	rpc.RegisterSlot("me", moveEntity, 0); // moving entity to another room(Can't add to nowhere!)
-	rpc.RegisterSlot("re", removeEntity, 0); // removes entity from room(Places it to the roomless)
-	rpc.RegisterSlot("de", deleteEntity, 0); // deletes entity
-	rpc.RegisterSlot("ue", updateEntity, 0); // updates da entity
+	rpc.RegisterFunction("ae", handleEntity); // adding entity to room
+	rpc.RegisterFunction("me", moveEntity); // moving entity to another room(Can't add to nowhere!)
+	rpc.RegisterFunction("re", removeEntity); // removes entity from room(Places it to the roomless)
+	rpc.RegisterFunction("de", deleteEntity); // deletes entity
+	rpc.RegisterFunction("ue", updateEntity); // updates da entity
 	//END
 
 	gets(str);

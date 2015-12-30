@@ -37,6 +37,18 @@ void Room::step()
 	}
 	else{
 		this->_dynamicsWorld->stepSimulation(1.f / 60.f, 10.0f);
+		int numManifolds = _dynamicsWorld->getDispatcher()->getNumManifolds();
+		for (int i = 0; i<numManifolds; i++)
+		{
+			btPersistentManifold* contactManifold = _dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
+			int numContacts = contactManifold->getNumContacts();
+			if (numContacts > 0)
+			{
+				const btCollisionObject* obA = contactManifold->getBody0();
+				const btCollisionObject* obB = contactManifold->getBody1();
+				//TODO: finish it...
+			}
+		}
 	}
 }
 
