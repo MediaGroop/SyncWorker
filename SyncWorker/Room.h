@@ -1,9 +1,9 @@
 #pragma once
 #include <map>
 #include "Entity.h"
-#include "BulletDynamics\ConstraintSolver\btSequentialImpulseConstraintSolver.h"
-#include "BulletDynamics\Dynamics\btDiscreteDynamicsWorld.h"
-#include "BulletCollision\CollisionDispatch\btDefaultCollisionConfiguration.h"
+#include "BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h"
+#include "BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h"
+#include "BulletCollision/CollisionDispatch/btDefaultCollisionConfiguration.h"
 #include <thread>
 
 class Room

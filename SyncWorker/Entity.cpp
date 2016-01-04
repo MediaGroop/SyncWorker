@@ -1,6 +1,6 @@
 #include "Entity.h"
-#include "BulletCollision\CollisionShapes\btSphereShape.h"
-#include "BulletDynamics\Dynamics\btRigidBody.h"
+#include "BulletCollision/CollisionShapes/btSphereShape.h"
+#include "BulletDynamics/Dynamics/btRigidBody.h"
 #include "MotionState.h"
 #include "ServVars.h"
 

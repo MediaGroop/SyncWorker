@@ -1,10 +1,19 @@
 #include "stdafx.h"
 #include "RoomProcessor.h"
-#define sleep Sleep(10);
 
 void step(RoomProcessor* a){
+#if defined(_WIN64) || defined(_WIN32)
+#else
+  	struct timespec req;
+	req.tv_sec = 0;
+	req.tv_nsec = 25000L;
+#endif
 	while (a->getRunning()){
-		sleep
+	  #if defined(_WIN64) || defined(_WIN32)
+		Sleep(10);
+#else
+		nanosleep(&req, NULL);
+#endif
 		for (std::map<int, Room*>::iterator i = a->getRooms()->begin(); i != a->getRooms()->end(); ++i)
 		{
 			(*i).second->step();
@@ -30,7 +39,7 @@ RoomProcessor::~RoomProcessor()
 
 bool RoomProcessor::addRoom(Room* r){
 	if ((*_rooms.find(r->getId())).second == nullptr && getClientsCount() < maxClients) {
-		_rooms.insert(pair<int, Room*>(r->getId(), r));
+		_rooms.insert(std::pair<int, Room*>(r->getId(), r));
 		return true;
 	}
 	return false;

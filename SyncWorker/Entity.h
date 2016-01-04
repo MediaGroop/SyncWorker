@@ -1,6 +1,6 @@
 #pragma once
 #include <map>
-#include "BulletDynamics\Dynamics\btRigidBody.h"
+#include "BulletDynamics/Dynamics/btRigidBody.h"
 
 class Entity
 {
